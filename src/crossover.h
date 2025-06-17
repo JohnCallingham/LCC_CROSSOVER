@@ -35,8 +35,17 @@ class Crossover : public LCC_Node_Component_Base {
 
     bool eventIndexMatches(uint16_t index) override;
     bool eventIndexMatchesCurrentState(uint16_t index) override;
+
+    void setEventToggle(uint16_t eventToggle) { this->eventToggle = eventToggle; }
+
+    void eventReceived(uint16_t index);
+
     void sendEventsForCurrentState() override;
 
+    void process();
+
+    bool isThrown() { return false; } // to be completed
+    bool isClosed() { return false; } // to be completed
 
   private:
       uint16_t eventToggle;
