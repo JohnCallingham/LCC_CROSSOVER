@@ -42,7 +42,7 @@ bool Crossover::eventIndexMatchesCurrentState(uint16_t index) {
 }
 
 void Crossover::eventReceived(uint16_t index) {
-  Serial.printf("\nevent index 0x%02X received for crossover", index);
+  // Serial.printf("\nevent index 0x%02X received for crossover", index);
 
   /**
    * Handle the toggle event.
@@ -60,12 +60,31 @@ void Crossover::eventReceived(uint16_t index) {
   // Determine the target position for this event.
   for (auto & targetPosition : positions) {
     if (index == targetPosition.getEventMove()) {
-      // Serial.printf("\nmoving to position %d", targetPosition.getNumber());
-      Serial.printf("\nmoving to position %s", targetPosition.getDescription());
+      Serial.printf("\ncrossover moving to position %d (%s)", targetPosition.getNumber(), targetPosition.getDescription());
+
+      // Check to see if both servos are already at the target position. If so then just send the crossover's reached event and return.
+      
+      // Check to see if either servo is already at the target position. Do we need to get their current angles to do this?
+
+      // If we get here then at least one servo needs to move.
+      // Send the crossover's leaving event.
+
+      
+
+
+      // Start both servos moving to their target angles.
+      if (targetPosition.getNumber() == 0) {
+        // The crossover's target position is 0 (Thrown). Each servo's target position is 0 (Thrown).
+        servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(0));
+        servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(0));
+      } else if (targetPosition.getNumber() == 1) {
+        // The crossover's target position is 1 (Closed). Each servo's target position is 2 (Closed).
+        servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(2));
+        servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(2));
+      } else {
+        Serial.printf("\nerror in Crossover::eventReceived()");
+      }
     }
-
-
-
   }
 }
 
