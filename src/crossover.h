@@ -5,6 +5,14 @@
 #include "LCC_Node_Component_Base.h"
 #include "servo_lcc.h"
 #include <vector>
+#include "servo_lcc.h" // For the servo position #defines.
+
+/**
+ * #defines for the indexes to the crossover positions vector.
+ */
+#define POS_CR_THROWN 0
+#define POS_CR_CLOSED 1
+#define POS_CR_UNKNOWN 2
 
 class Position_Crossover {
   public:
@@ -38,10 +46,10 @@ class Crossover : public LCC_Node_Component_Base {
                       uint16_t eventLeaving,
                       uint16_t eventReached);
 
-
-
     bool eventIndexMatches(uint16_t index) override;
     bool eventIndexMatchesCurrentState(uint16_t index) override;
+
+    void setInitialPosition(uint8_t initialPosition) { this->currentPosition = initialPosition; }
 
     void setEventToggle(uint16_t eventToggle) { this->eventToggle = eventToggle; }
 
@@ -62,6 +70,13 @@ class Crossover : public LCC_Node_Component_Base {
 
       std::vector<Position_Crossover> positions;
 
+      uint8_t currentPosition;
+
+      bool waitingForReachedThrown = false;
+      bool waitingForReachedClosed = false;
+
+      void moveServosToThrown();
+      void moveServosToClosed();
 };
 
 #endif
