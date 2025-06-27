@@ -59,8 +59,8 @@ class Crossover : public LCC_Node_Component_Base {
 
     void process();
 
-    bool isThrown() { return false; } // to be completed
-    bool isClosed() { return false; } // to be completed
+    bool isThrown() { return (currentPosition == POS_CR_THROWN) ? true : false; }
+    bool isClosed() { return (currentPosition == POS_CR_CLOSED) ? true : false; }
 
   private:
       uint16_t eventToggle;
