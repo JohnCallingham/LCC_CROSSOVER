@@ -1,4 +1,8 @@
 {
   "name": "CROSSOVER",
-  "version": "0.0.0+20250617122703"
+  "version": "0.0.0+20250617122703",
+  "dependencies":
+    {
+    "LCC_NODE_COMPONENT_BASE": "https://github.com/JohnCallingham/LCC_NODE_COMPONENT_BASE.git"
+    }
 }
