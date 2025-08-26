@@ -150,16 +150,20 @@ void Crossover::eventReceived(uint16_t index) {
 }
 
 void Crossover::moveServosToThrown() {
-  servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(POS_THROWN));
-  servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(POS_THROWN));
+  // servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(POS_THROWN));
+  servo0->servoEasing.easeTo(servo0->getAngleForPosition(POS_THROWN));
+  // servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(POS_THROWN));
+  servo1->servoEasing.easeTo(servo1->getAngleForPosition(POS_THROWN));
   if (sendEvent) sendEvent(servo0->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo0.
   if (sendEvent) sendEvent(servo1->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo1.
   waitingForReachedThrown = true; // So we can send the reached event when appropriate.
 }
 
 void Crossover::moveServosToClosed() {
-  servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(POS_CLOSED));
-  servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(POS_CLOSED));
+  // servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(POS_CLOSED));
+  servo0->servoEasing.easeTo(servo0->getAngleForPosition(POS_CLOSED));
+  // servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(POS_CLOSED));
+  servo1->servoEasing.easeTo(servo1->getAngleForPosition(POS_CLOSED));
   if (sendEvent) sendEvent(servo0->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo0.
   if (sendEvent) sendEvent(servo1->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo1.
   waitingForReachedClosed = true; // So we can send the reached event when appropriate.
@@ -209,71 +213,3 @@ void Crossover::process() {
     }
   }
 }
-
-  // // old code from here down
-  // for (auto & targetPosition : positions) {
-  //   if (index == targetPosition.getEventMove()) {
-  //     Serial.printf("\ncrossover moving to position %d (%s)", targetPosition.getNumber(), targetPosition.getDescription());
-
-  //     /**
-  //      * Check to see if both servos are already at the target position.
-  //      * If so then just send the crossover's reached event for the target position
-  //      * and return.
-  //      */
-  //     // Get each servo's current angle.
-  //     uint8_t servo0CurrentAngle = servo0->servoEasing.getCurrentAngle();
-  //     uint8_t servo1CurrentAngle = servo1->servoEasing.getCurrentAngle();
-
-  //     // Get each servo's target angle for the crossover's target position.
-  //     uint8_t servo0TargetAngle;
-  //     uint8_t servo1TargetAngle;
-
-  //     uint8_t targetPositionNumber = targetPosition.getNumber();
-
-  //     // If the crossover's target position number is 0 (Thrown), then the servo's target position is 0 (Thrown).
-  //     if (targetPositionNumber == POS_CR_THROWN) {
-  //       servo0TargetAngle = servo0->getAngleForPosition(POS_THROWN);
-  //       servo1TargetAngle = servo1->getAngleForPosition(POS_THROWN);
-  //     }
-  //     // If the crossover's target position number is 1 (Closed), then the servo's target position is 2 (Closed).
-  //     if (targetPositionNumber == POS_CR_CLOSED) {
-  //       servo0TargetAngle = servo0->getAngleForPosition(2);
-  //       servo1TargetAngle = servo1->getAngleForPosition(2);
-  //     }
-
-  //     if ((servo0CurrentAngle == servo0TargetAngle) && (servo1CurrentAngle == servo1TargetAngle)) {
-  //       if (sendEvent) sendEvent(positions[targetPositionNumber].getEventReached());
-  //       return;
-  //     }
-
-  //     // If we get here then at least one servo needs to move.
-
-  //     // Send the crossover's leaving event for its current position.
-  //     // Do not send anything if the crossover's current position is Unknown.
-  //     if ((this->currentPosition == POS_CR_THROWN) || (this->currentPosition == POS_CR_CLOSED)) {
-  //       if (sendEvent) sendEvent(positions[currentPosition].getEventLeaving());
-  //     }
-
-  //     // Start both servos moving to their target angles.
-  //     // Need to send their leaving events here.
-  //     if (targetPositionNumber == POS_CR_THROWN) {
-  //       // The crossover's target position is 0 (Thrown). Each servo's target position is 0 (Thrown).
-  //       moveServosToThrown();
-  //       // servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(POS_THROWN));
-  //       // servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(POS_THROWN));
-  //       // if (sendEvent) sendEvent(servo0->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo0.
-  //       // if (sendEvent) sendEvent(servo1->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo1.
-  //       // waitingForReachedThrown = true; // So we can send the reached event when appropriate.
-  //     } else if (targetPositionNumber == POS_CR_CLOSED) {
-  //       // The crossover's target position is 1 (Closed). Each servo's target position is 2 (Closed).
-  //       moveServosToClosed();
-  //       // servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(POS_CLOSED));
-  //       // servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(POS_CLOSED));
-  //       // if (sendEvent) sendEvent(servo0->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo0.
-  //       // if (sendEvent) sendEvent(servo1->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo1.
-  //       // waitingForReachedClosed = true; // So we can send the reached event when appropriate.
-  //     } else {
-  //       Serial.printf("\nerror in Crossover::eventReceived()");
-  //     }
-  //   }
-  // }
