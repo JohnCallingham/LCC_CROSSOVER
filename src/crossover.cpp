@@ -63,13 +63,12 @@ void Crossover::eventReceived(uint16_t index) {
   if (index == eventToggle) {
     Serial.printf("\ntoggle position");
 
-    // If the crossover's current position is unknown take no action.
-    if (this->currentPosition == POS_CR_UNKNOWN) return;
-    // === OR ===
-    // === move both servos to closed (arbitrarily chosen) ===
-    // === do not send any leaving events ===
-    // === send three reached events ===
-    // === this will allow the speedy initialisation of both points after a power up. ===
+    // // If the crossover's current position is unknown take no action.
+    // Used for quick initialisation of both points after a power up.
+    if (this->currentPosition == POS_CR_UNKNOWN) {
+      moveServosToClosed(); // === move both servos to closed (arbitrarily chosen) ===
+      return;
+    }
 
     // If the crossover's current position is Thrown,
     //  send the Thrown leaving event and start the servos moving to Closed.
