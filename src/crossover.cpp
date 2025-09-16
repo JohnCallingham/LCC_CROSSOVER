@@ -190,7 +190,8 @@ void Crossover::sendEventsForCurrentState() {
   }
 }
 
-void Crossover::process() {
+// void Crossover::process() {
+void Crossover::loop() {
   /**
    * Keep checking for both servos having reached their target position.
    */

@@ -57,7 +57,8 @@ class Crossover : public LCC_Node_Component_Base {
 
     void sendEventsForCurrentState() override;
 
-    void process();
+    // void process();
+    void loop();
 
     bool isThrown() { return (currentPosition == POS_CR_THROWN) ? true : false; }
     bool isClosed() { return (currentPosition == POS_CR_CLOSED) ? true : false; }
