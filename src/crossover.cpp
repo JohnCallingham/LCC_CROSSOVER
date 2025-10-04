@@ -25,8 +25,14 @@ void Crossover::addPosition(uint8_t positionNumber,
 }
 
 bool Crossover::eventIndexMatches(uint16_t index) {
+  // Check for one of the testing event indexes.
+  if ((index == this->testStartEventIndex) ||
+      (index == this->testStopEventIndex)) return true;
+
+  // Check for the toggle event index.
   if (index == this->eventToggle) return true;
 
+  // Check for one of the position event indexes.
   for (auto & position : positions) {
     if ((index == position.getEventMove()) ||
         (index == position.getEventLeaving()) ||
@@ -56,6 +62,16 @@ bool Crossover::eventIndexMatchesCurrentState(uint16_t index) {
 
 void Crossover::eventReceived(uint16_t index) {
   // Serial.printf("\nevent index 0x%02X received for crossover", index);
+
+  /**
+   * Handle the test cycle start and stop events.
+   */
+  if (index == testStartEventIndex) {
+    Serial.printf("\nCrossover starting the testing cycle.");
+  }
+  if (index == testStopEventIndex) {
+    Serial.printf("\nCrossover stopping the testing cycle.");
+  }
 
   /**
    * Handle the toggle event.
