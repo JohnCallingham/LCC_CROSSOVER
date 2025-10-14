@@ -81,10 +81,17 @@ void Crossover::eventReceived(uint16_t index) {
     Serial.printf("\nCrossover stopping the testing cycle.");
 
     // Leave both servos at their mid position.
-    //servoEasing.moveTo(positions[POS_MID].getAngle());
+    servo0->servoEasing.moveTo(servo0->getAngleForPosition(POS_MID));
+    servo1->servoEasing.moveTo(servo1->getAngleForPosition(POS_MID));
 
-    // TO DO: need to send the appropriate leave and reached events.
-    // The servo may be moving or not !!!
+    // Send the leaving events for both thrown and closed positions for both servos and the crossover.
+    // Send the reached event for the mid position for both servos (no mid position for the crossover).
+    if (sendEvent) {
+      // The servos send their own events.
+
+      sendEvent(positions[POS_CR_THROWN].getEventLeaving());
+      sendEvent(positions[POS_CR_CLOSED].getEventLeaving());
+    }
 
     testing = false;
   }
