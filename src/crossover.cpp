@@ -68,9 +68,25 @@ void Crossover::eventReceived(uint16_t index) {
    */
   if (index == testStartEventIndex) {
     Serial.printf("\nCrossover starting the testing cycle.");
+
+    // Set the first test.
+    currentTest = MOVE_TO_THROWN;
+
+    // Set the timer so that testing starts immediately.
+    testingTimer = millis();
+
+    testing = true;
   }
   if (index == testStopEventIndex) {
     Serial.printf("\nCrossover stopping the testing cycle.");
+
+    // Leave both servos at their mid position.
+    //servoEasing.moveTo(positions[POS_MID].getAngle());
+
+    // TO DO: need to send the appropriate leave and reached events.
+    // The servo may be moving or not !!!
+
+    testing = false;
   }
 
   /**
@@ -206,24 +222,19 @@ void Crossover::sendEventsForCurrentState() {
   }
 }
 
-// void Crossover::process() {
 void Crossover::loop() {
   /**
    * Keep checking for both servos having reached their target position.
    */
-
-   if (waitingForReachedThrown) {
+  if (waitingForReachedThrown) {
     // If both servos have reached their thrown position, send the crossover's reached thrown event
     //  and update the crossover's current posotion.
     if ((servo0->isThrown()) && (servo1->isThrown())) {
       waitingForReachedThrown = false;
-      // if (sendEvent) sendEvent(this->positions[0].getEventReached());
       if (sendEvent) sendEvent(this->positions[POS_CR_THROWN].getEventReached());
-      // this->currentPosition = 0;
       this->currentPosition = POS_CR_THROWN;
     }
   }
-
   if (waitingForReachedClosed) {
     // If both servos have reached their closed position, send the crossover's reached closed event
     //  and update the crossover's current posotion.
@@ -232,5 +243,50 @@ void Crossover::loop() {
       if (sendEvent) sendEvent(this->positions[POS_CR_CLOSED].getEventReached());
       this->currentPosition = POS_CR_CLOSED;
     }
+  }
+
+  if (testing) testLoop();
+}
+
+void Crossover::testLoop() {
+  if (millis() < testingTimer) return;
+
+  // Time to move to the next part of the test cycle.
+
+  switch (currentTest) {
+    case MOVE_TO_THROWN:
+      if (sendEvent) sendEvent(positions[POS_CR_CLOSED].getEventLeaving());
+      moveServosToThrown();
+      waitingForReachedThrown = true;
+      testingTimer = millis() + 1000;
+      currentTest = WAIT_FOR_THROWN;
+      break;
+    
+    case WAIT_FOR_THROWN:
+      if (currentPosition == POS_CR_THROWN) {
+        waitingForReachedThrown = false;
+        testingTimer = millis() + 1000;
+        currentTest = MOVE_TO_CLOSED;
+      }
+      break;
+    
+    case MOVE_TO_CLOSED:
+      if (sendEvent) sendEvent(positions[POS_CR_THROWN].getEventLeaving());
+      moveServosToClosed();
+      waitingForReachedClosed = true;
+      testingTimer = millis() + 1000;
+      currentTest = WAIT_FOR_CLOSED;
+      break;
+    
+    case WAIT_FOR_CLOSED:
+      if (currentPosition == POS_CR_CLOSED) {
+        waitingForReachedClosed = false;
+        testingTimer = millis() + 1000;
+        currentTest = MOVE_TO_THROWN;
+      }
+      break;
+    
+    default:
+      break;
   }
 }

@@ -78,6 +78,12 @@ class Crossover : public LCC_Node_Component_Base {
 
       void moveServosToThrown();
       void moveServosToClosed();
+
+      // Define the test cycles and track the current test cycle.
+    enum Test { MOVE_TO_THROWN, WAIT_FOR_THROWN, MOVE_TO_CLOSED, WAIT_FOR_CLOSED };
+    Test currentTest;
+
+    void testLoop();
 };
 
 #endif
