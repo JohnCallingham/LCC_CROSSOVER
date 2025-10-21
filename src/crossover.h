@@ -9,6 +9,7 @@
 
 /**
  * #defines for the indexes to the crossover positions vector.
+ * Would be better if they were an enum (or an enum class).
  */
 #define POS_CR_THROWN 0
 #define POS_CR_CLOSED 1
