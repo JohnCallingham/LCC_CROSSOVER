@@ -15,8 +15,8 @@ Position_Crossover::Position_Crossover(uint8_t positionNumber,
 void Crossover::addPosition(uint8_t positionNumber,
                           const char *positionDescription,
                           uint16_t eventMove,
-                          uint16_t eventLeaving,
-                          uint16_t eventReached) {
+                          uint16_t eventReached,
+                          uint16_t eventLeaving) {
   positions.push_back(Position_Crossover (positionNumber,
                         positionDescription,
                         eventMove,
@@ -61,7 +61,7 @@ bool Crossover::eventIndexMatchesCurrentState(uint16_t index) {
 }
 
 void Crossover::eventReceived(uint16_t index) {
-  // Serial.printf("\nevent index 0x%02X received for crossover", index);
+  Serial.printf("\nevent index 0x%02X received for crossover", index);
 
   /**
    * Handle the test cycle start and stop events.
@@ -193,9 +193,7 @@ void Crossover::eventReceived(uint16_t index) {
 }
 
 void Crossover::moveServosToThrown() {
-  // servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(POS_THROWN));
   servo0->servoEasing.easeTo(servo0->getAngleForPosition(POS_THROWN));
-  // servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(POS_THROWN));
   servo1->servoEasing.easeTo(servo1->getAngleForPosition(POS_THROWN));
   if (sendEvent) sendEvent(servo0->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo0.
   if (sendEvent) sendEvent(servo1->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo1.
@@ -203,9 +201,7 @@ void Crossover::moveServosToThrown() {
 }
 
 void Crossover::moveServosToClosed() {
-  // servo0->servoEasing.setTargetAngle(servo0->getAngleForPosition(POS_CLOSED));
   servo0->servoEasing.easeTo(servo0->getAngleForPosition(POS_CLOSED));
-  // servo1->servoEasing.setTargetAngle(servo1->getAngleForPosition(POS_CLOSED));
   servo1->servoEasing.easeTo(servo1->getAngleForPosition(POS_CLOSED));
   if (sendEvent) sendEvent(servo0->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo0.
   if (sendEvent) sendEvent(servo1->getLeavingEventForCurrentAngle()); // Send the leaving closed event for servo1.
